@@ -15,3 +15,6 @@ download: clean-source
 		cd source/config-tool && \
 		git checkout $(CONFIG_TOOL_SOURCE) && \
 		rm -Rf .git .github
+
+artifacts:
+	curl -fsSL https://ip-ranges.amazonaws.com/ip-ranges.json -o source/quay/util/ipresolver/aws-ip-ranges.json
