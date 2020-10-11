@@ -1,6 +1,7 @@
 
 QUAY_SOURCE ?= 971-setup-cfg
 CONFIG_TOOL_SOURCE ?= master
+JWTPROXY_SOURCE ?= v0.0.4
 
 clean-source:
 	-rm -Rf source
@@ -14,6 +15,10 @@ download: clean-source
 	git clone https://github.com/quay/config-tool.git source/config-tool && \
 		cd source/config-tool && \
 		git checkout $(CONFIG_TOOL_SOURCE) && \
+		rm -Rf .git .github .gitignore
+	git clone https://github.com/quay/jwtproxy.git source/jwtproxy && \
+		cd source/jwtproxy && \
+		git checkout $(JWTPROXY_SOURCE) && \
 		rm -Rf .git .github .gitignore
 
 artifacts:
