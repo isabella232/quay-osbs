@@ -1,11 +1,9 @@
 
-QUAY_SOURCE ?= 971-setup-cfg
-CONFIG_TOOL_SOURCE ?= master
-JWTPROXY_SOURCE ?= v0.0.4
 
 setup:
 	-mkdir source
 
+QUAY_SOURCE ?= 971-setup-cfg
 quay-source:
 	-rm -Rf source/quay
 	git clone https://github.com/thomasmckay/quay.git source/quay && \
@@ -19,6 +17,7 @@ quay-source:
 	cd source/quay && \
 		PYTHONPATH=. python -m external_libraries
 
+CONFIG_TOOL_SOURCE ?= master
 config-tool-source:
 	-rm -Rf source/config-tool
 	git clone https://github.com/quay/config-tool.git source/config-tool && \
@@ -26,6 +25,7 @@ config-tool-source:
 		git checkout $(CONFIG_TOOL_SOURCE) && \
 		rm -Rf .git .github .gitignore
 
+JWTPROXY_SOURCE ?= v0.0.4
 jwtproxy-source:
 	-rm -Rf source/jwtproxy
 	git clone https://github.com/quay/jwtproxy.git source/jwtproxy && \
@@ -33,5 +33,14 @@ jwtproxy-source:
 		git checkout $(JWTPROXY_SOURCE) && \
 		rm -Rf .git .github .gitignore
 
-all: setup quay-source config-tool-source jwtproxy-source
-	git ls-remote
+PUSHGATEWAY_SOURCE ?= v1.3.0
+pushgateway-source:
+	-rm -Rf source/pushgateway
+	git clone https://github.com/prometheus/pushgateway.git source/pushgateway && \
+		cd source/pushgateway && \
+		git checkout $(PUSHGATEWAY_SOURCE) && \
+		rm -Rf .git .github .gitignore
+
+all: setup quay-source config-tool-source jwtproxy-source pushgateway-source
+	git status
+	echo "Don't forget to git commit & push"
