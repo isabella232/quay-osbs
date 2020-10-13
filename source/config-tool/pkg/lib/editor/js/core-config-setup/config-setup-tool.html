@@ -172,7 +172,7 @@
               <td class="non-input">Database Type:</td>
               <td>
                  <select ng-model="mapped.database.kind" ng-disabled="fieldGroupReadonly('Database')">
-                    <option value="mysql+pymysql">MySQL</option>
+                    <option value="mysql">MySQL</option>
                     <option value="postgresql">Postgres</option>
                  </select>
               </td>
@@ -743,6 +743,19 @@
                   If so, please make sure to register your SSL CA in the <a href="#custom-ssl">custom certificates
                   panel</a> above.
                 </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Security Scanner PSK:</td>
+              <td>
+                <span class="config-string-field" binding="config.SECURITY_SCANNER_V4_PSK" 
+                      is-readonly="fieldGroupReadonly('SecurityScanner')" placeholder="Base64 Encoded PSK"></span>
+                <div class="help-text" style="margin-top: 10px;">
+                  Clair Pre-Shared Key. Make sure to include this value in your Clair config.
+                </div>
+              </td>
+              <td>
+                <button ng-click="generateClairPSK()">Generate PSK</button>
               </td>
             </tr>
           </table>
@@ -1768,6 +1781,16 @@
                   If enabled, when adding a new user to a team, they will receive an invitation to join the team, with
                   the option to decline.
                   Otherwise, users will be immediately part of a team when added by a team administrator.
+                </div>
+              </td>
+            </tr>
+            <tr ng-if="true">
+              <td>Super Users:</td>
+              <td>
+                <span class="config-list-field" item-title="Super User"
+                      binding="config.SUPER_USERS" item-pattern="[a-z0-9_]{4,30}"></span>
+                <div class="help-text">
+                  Users included in this list will be given elevated access to Quay. 
                 </div>
               </td>
             </tr>

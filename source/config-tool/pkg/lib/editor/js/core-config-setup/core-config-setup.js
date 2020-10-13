@@ -3,6 +3,7 @@ import * as angular from 'angular';
 const forge = require('node-forge')
 const JSZip = require('jszip')
 const yaml = require('js-yaml')
+const uuid = require('uuid')
 const FileSaver = require('file-saver')
 const templateUrl = require('./config-setup-tool.html');
 const urlParsedField =  require('../config-field-templates/config-parsed-field.html');
@@ -47,6 +48,8 @@ angular.module("quay-config")
             .split(',')
             .forEach(fieldGroup => $scope.readOnlyFieldGroups.add(fieldGroup.replace(/"/, '')));
         }
+
+        $scope.validationMode = "online"
 
         $scope.fieldGroupReadonly = function(fieldGroup) {
           return $scope.readOnlyFieldGroups.has(fieldGroup);
@@ -233,15 +236,21 @@ angular.module("quay-config")
           $scope.savingConfiguration = false;
         };
 
+        var generateDatabaseSecretKey = () => uuid.v4()
+
         $scope.validateConfig = function() {
           $scope.validationStatus = 'validating';
 
           var errorDisplay = ApiService.errorDisplay(
               'Could not validate configuration. Please report this error.');
 
-          ApiService.validateConfigBundle({"config.yaml": $scope.config, "certs": $scope.certs, readOnlyFieldGroups: $scope.readOnlyFieldGroups}).then(function(resp) {
+          ApiService.validateConfigBundle({"config.yaml": $scope.config, "certs": $scope.certs, readOnlyFieldGroups: $scope.readOnlyFieldGroups}, $scope.validationMode).then(function(resp) {
             $scope.validationStatus = resp.data.length == 0 ? 'success' : 'error';
             $scope.validationResult = resp.data;
+            if($scope.validationStatus == 'success' && $scope.validationMode == 'setup'){
+              $scope.config["SETUP_COMPLETE"] = true
+              $scope.config["DATABASE_SECRET_KEY"] = generateDatabaseSecretKey()
+            }
           }, errorDisplay);
         };
 
@@ -709,6 +718,12 @@ angular.module("quay-config")
           }
         };
 
+        var generateRandomString = () => Math.random().toString(20).substr(2, 2048)
+
+        $scope.generateClairPSK = function() {
+            $scope.config['SECURITY_SCANNER_V4_PSK'] = btoa(generateRandomString())
+        }
+
         // Validate and update storage config on update.
         var refreshStorageConfig = function() {
           if (!$scope.config || !$scope.storageConfig) return;
@@ -788,7 +803,8 @@ angular.module("quay-config")
             initializeStorageConfig($scope);
             $scope.mapped['$hasChanges'] = false;
             if(resp.status == 202){
-              alert("Warning: No config bundle was found. Default values will be used. \n If you are trying to modify an existing config bundle, please make sure that you are mounting it correctly.")
+              alert("Warning: No config bundle was found. Running in Setup Mode. Default values will be used. \nIf you are trying to modify an existing config bundle, please make sure that you are mounting it correctly.")
+              $scope.validationMode = "setup"
             }
           }, ApiService.errorDisplay('Could not load config'));
         });
