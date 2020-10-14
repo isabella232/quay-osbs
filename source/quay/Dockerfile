@@ -91,7 +91,7 @@ ENV JWTPROXY_VERSION=0.0.3
 RUN curl -fsSL -o /usr/local/bin/jwtproxy "https://github.com/coreos/jwtproxy/releases/download/v${JWTPROXY_VERSION}/jwtproxy-${OS}-${ARCH}" && \
     chmod +x /usr/local/bin/jwtproxy
 
-ENV PUSHGATEWAY_VERSION=1.3.0
+ENV PUSHGATEWAY_VERSION=1.0.0
 RUN curl -fsSL "https://github.com/prometheus/pushgateway/releases/download/v${PUSHGATEWAY_VERSION}/pushgateway-${PUSHGATEWAY_VERSION}.${OS}-${ARCH}.tar.gz" | \
     tar xz "pushgateway-${PUSHGATEWAY_VERSION}.${OS}-${ARCH}/pushgateway" && \
     mv "pushgateway-${PUSHGATEWAY_VERSION}.${OS}-${ARCH}/pushgateway" /usr/local/bin/pushgateway && \
@@ -137,10 +137,8 @@ RUN chgrp -R 0 /etc/pki/ca-trust/extracted && \
     chmod -R g=u /etc/pki/ca-trust/extracted && \
     chgrp -R 0 /etc/pki/ca-trust/source/anchors && \
     chmod -R g=u /etc/pki/ca-trust/source/anchors && \
-    chgrp -R 0 /usr/local/lib/python3.6/site-packages/requests && \
-    chmod -R g=u /usr/local/lib/python3.6/site-packages/requests && \
-    chgrp -R 0 /usr/local/lib/python3.6/site-packages/certifi && \
-    chmod -R g=u /usr/local/lib/python3.6/site-packages/certifi
+    chgrp -R 0 /usr/local/lib/python$PYTHON_VERSION/site-packages/certifi && \
+    chmod -R g=u /usr/local/lib/python$PYTHON_VERSION/site-packages/certifi
 
 VOLUME ["/var/log", "/datastorage", "/tmp", "/conf/stack"]
 

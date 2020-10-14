@@ -29,7 +29,6 @@ fi
 if [ -f $CERTDIR ]; then
   echo "Installing extra certificates found in $CERTDIR file"
   csplit -z -f ${SYSTEM_CERTDIR}/extra-ca- $CERTDIR  '/-----BEGIN CERTIFICATE-----/' '{*}'
-  cat $CERTDIR >> $PYTHON_ROOT/site-packages/requests/cacert.pem
   cat $CERTDIR >> $PYTHON_ROOT/site-packages/certifi/cacert.pem
 fi
 
@@ -38,7 +37,6 @@ for f in $(find -L $QUAYCONFIG/ -maxdepth 1 -type f -name "extra_ca*")
 do
  echo "Installing extra cert $f"
  cp "$f" ${SYSTEM_CERTDIR}
- cat "$f" >> $PYTHON_ROOT/site-packages/requests/cacert.pem
  cat "$f" >> $PYTHON_ROOT/site-packages/certifi/cacert.pem
 done
 

@@ -1,12 +1,12 @@
-
+RELEASE ?= v3.4.0
 
 setup:
 	-mkdir source
 
-QUAY_SOURCE ?= 971-setup-cfg
+QUAY_SOURCE ?= master
 quay-source:
 	-rm -Rf source/quay
-	git clone https://github.com/thomasmckay/quay.git source/quay && \
+	git clone https://github.com/quay/quay.git source/quay && \
 		cd source/quay && \
 		git checkout $(QUAY_SOURCE) && \
 		rm -Rf .git .github .gitignore
@@ -16,6 +16,7 @@ quay-source:
 	-mkdir -p source/quay/static/ldn
 	cd source/quay && \
 		PYTHONPATH=. python -m external_libraries
+	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
 
 CONFIG_TOOL_SOURCE ?= master
 config-tool-source:
