@@ -18,7 +18,7 @@ quay-source:
 		PYTHONPATH=. python -m external_libraries
 	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
 
-CONFIG_TOOL_SOURCE ?= master
+CONFIG_TOOL_SOURCE ?= redhat-3.4
 config-tool-source:
 	-rm -Rf source/config-tool
 	git clone https://github.com/quay/config-tool.git source/config-tool && \
