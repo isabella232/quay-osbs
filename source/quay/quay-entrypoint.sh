@@ -42,6 +42,7 @@ EOF
 export DB_CONNECTION_POOLING_REGISTRY=${DB_CONNECTION_POOLING:-"true"}
 export CONFIG_APP_PASSWORD=${CONFIG_APP_PASSWORD:-"\"\""}
 export OPERATOR_ENDPOINT=${OPERATOR_ENDPOINT:-"\"\""}
+export QUAY_CONFIG_READ_ONLY_FIELD_GROUPS=${QUAY_CONFIG_READ_ONLY_FIELD_GROUPS:-"\"\""}
 
 case "$QUAYENTRY" in
     "shell")
@@ -88,16 +89,34 @@ case "$QUAYENTRY" in
         done
         exec supervisord -c "${QUAYCONF}/supervisord.conf" 2>&1
         ;;
-    "repomirror")
-        echo "Entering repository mirroring mode"
-        export QUAY_SERVICES="${QUAY_SERVICES}${QUAY_SERVICES:+,}repomirrorworker,pushgateway"
-        ;&
     "registry")
         if [ -z "${QUAY_SERVICES}" ]; then
             echo "Running all default registry services"
         else
             echo "Running services ${QUAY_SERVICES}"
         fi
+        for f in "${QUAYCONF}"/init/*.sh; do
+            echo "Running init script '$f'"
+            "$f" || exit
+        done
+        exec supervisord -c "${QUAYCONF}/supervisord.conf" 2>&1
+        ;;
+    "repomirror-nomigrate")
+        echo "Entering repository mirroring mode"
+        export QUAY_SERVICES="${QUAY_SERVICES}${QUAY_SERVICES:+,}repomirrorworker,pushgateway"
+        echo "Running services ${QUAY_SERVICES}"
+        for f in "${QUAYCONF}"/init/*.sh; do
+            if [ "$f" != "/quay-registry/conf/init/runmigration.sh" ]; then
+                echo "Running init script '$f'"
+                ENSURE_NO_MIGRATION=true "$f" || exit
+            fi
+        done
+        exec supervisord -c "${QUAYCONF}/supervisord.conf" 2>&1
+        ;;
+    "repomirror")
+        echo "Entering repository mirroring mode"
+        export QUAY_SERVICES="${QUAY_SERVICES}${QUAY_SERVICES:+,}repomirrorworker,pushgateway"
+        echo "Running services ${QUAY_SERVICES}"
         for f in "${QUAYCONF}"/init/*.sh; do
             echo "Running init script '$f'"
             "$f" || exit
