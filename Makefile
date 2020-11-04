@@ -3,7 +3,7 @@ RELEASE ?= v3.4.0
 setup:
 	-mkdir source
 
-QUAY_SOURCE ?= master
+QUAY_SOURCE ?= redhat-3.4
 quay-source:
 	-rm -Rf source/quay
 	git clone https://github.com/quay/quay.git source/quay && \
