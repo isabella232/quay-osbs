@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -202,7 +201,6 @@ func GetTlsConfig(opts Options) (*tls.Config, error) {
 
 	for name, cert := range opts.Certificates {
 		if strings.HasPrefix(name, "extra_ca_certs/") {
-			log.Println("Adding certificate: " + name)
 			if ok := rootCAs.AppendCertsFromPEM(cert); !ok {
 				return nil, errors.New("Failed to append custom certificate: " + name)
 			}
@@ -210,4 +208,17 @@ func GetTlsConfig(opts Options) (*tls.Config, error) {
 	}
 
 	return &tls.Config{RootCAs: rootCAs}, nil
+}
+
+// HasOIDCProvider will find if an OIDC provider is included in a config.yaml
+func HasOIDCProvider(fullConfig map[string]interface{}) bool {
+
+	for key, value := range fullConfig {
+		if _, ok := value.(map[string]interface{}); ok {
+			if strings.HasSuffix(key, "_LOGIN_CONFIG") && key != "GOOGLE_LOGIN_CONFIG" && key != "GITHUB_LOGIN_CONFIG" {
+				return true
+			}
+		}
+	}
+	return false
 }
