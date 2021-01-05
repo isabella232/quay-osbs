@@ -46,6 +46,10 @@ pushgateway-source:
 		go mod vendor && \
 		rm -Rf .git .github .gitignore
 
+commit:
+	-git commit -a -m "updated"
+	git push thomasmckay quay-3.4-rhel-8
+
 all: setup quay-source config-tool-source jwtproxy-source pushgateway-source
 	git status
 	echo "Don't forget to git commit & push"
