@@ -61,8 +61,7 @@ WantedBy=multi-user.target
         "sshAuthorizedKeys": {{ ssh_authorized_keys | jsonify }},
         {%- endif %}
         "groups": [
-          "sudo",
-          "docker"
+          "sudo"
         ],
         "name": "core"
       }
@@ -71,12 +70,29 @@ WantedBy=multi-user.target
   "storage": {
     "files": [
       {
-        "path": "/etc/pki/ca-trust/source/anchors/ssl.cert",
+        "path": "/etc/pki/ca-trust-source/anchors/ssl.cert",
         "contents": {
           "source": {{ ca_cert | dataurl | jsonify }}
         },
         "mode": 420
       },
+      {% if container_runtime == "podman" %}
+      {
+        "path": "/etc/containers/certs.d/{{ registry_hostname }}/client.crt",
+        "contents": {
+          "source": {{ ca_cert | dataurl | jsonify }}
+        },
+        "mode": 420
+      },
+      {% else %}
+      {
+        "path": "/etc/docker/certs.d/{{ registry_hostname }}/client.crt",
+        "contents": {
+          "source": {{ ca_cert | dataurl | jsonify }}
+        },
+        "mode": 420
+      },
+      {% endif %}
       {
         "path": "/etc/hostname",
         "contents": {
@@ -118,8 +134,9 @@ WantedBy=multi-user.target
                        quay_username,
                        quay_password,
                        worker_tag,
-                       extra_args='--privileged --env-file /root/overrides.list -v /var/run/podman/podman.sock:/var/run/podman/podman.sock -v /etc/pki/ca-trust-source/anchors:/certs',
-                       restart_policy='no'
+                       extra_args='--privileged --env-file /root/overrides.list -v /var/run/podman/podman.sock:/var/run/podman/podman.sock -v /etc/pki/ca-trust-source/anchors:/certs -e DOCKER_HOST=unix:/var/run/podman/podman.sock',
+                       restart_policy='no',
+                       oneshot=True,
                       ) | indent(6) }},
       {% else %}
       {{ dockersystemd("quay-builder",
@@ -128,9 +145,10 @@ WantedBy=multi-user.target
                        quay_username,
                        quay_password,
                        worker_tag,
-                       extra_args='--privileged --env-file /root/overrides.list -v /var/run/podman/podman.sock:/var/run/podman/podman.sock -v /etc/pki/ca-trust-source/anchors:/certs',
+                       extra_args='--privileged --env-file /root/overrides.list -v /var/run/podman/podman.sock:/var/run/podman/podman.sock -v /etc/pki/ca-trust-source/anchors:/certs -e DOCKER_HOST=unix:/var/run/podman/podman.sock',
                        exec_stop_post=['/bin/sh -xc "/bin/sleep 120; /usr/bin/systemctl --no-block poweroff"'],
-                       restart_policy='no'
+                       restart_policy='no',
+                       oneshot=True,
                       ) | indent(6) }},
       {% endif %}
       {% else %}
@@ -143,6 +161,7 @@ WantedBy=multi-user.target
                        worker_tag,
                        extra_args='--net=host --privileged --env-file /root/overrides.list -v /var/run/docker.sock:/var/run/docker.sock -v /etc/pki/ca-trust-source/anchors:/certs',
                        restart_policy='no'
+                       oneshot=True,
                       ) | indent(6) }},
       {% else %}
       {{ dockersystemd("quay-builder",
@@ -154,6 +173,7 @@ WantedBy=multi-user.target
                        extra_args='--net=host --privileged --env-file /root/overrides.list -v /var/run/docker.sock:/var/run/docker.sock -v /etc/pki/ca-trust-source/anchors:/certs',
                        exec_stop_post=['/bin/sh -xc "/bin/sleep 120; /usr/bin/systemctl --no-block poweroff"'],
                        restart_policy='no'
+                       oneshot=True,
                       ) | indent(6) }},
       {% endif %}
       {% endif %}
