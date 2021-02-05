@@ -1,7 +1,8 @@
-RELEASE ?= v3.4.0
+RELEASE ?= v3.4.1
 
 setup:
 	-mkdir source
+	-rm -f source.sha
 
 QUAY_SOURCE ?= redhat-3.4
 quay-source:
@@ -17,6 +18,7 @@ quay-source:
 	cd source/quay && \
 		PYTHONPATH=. python -m external_libraries
 	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
+	echo github.com/quay/quay `git rev-parse HEAD` >> ../../source.sha
 
 CONFIG_TOOL_SOURCE ?= redhat-3.4
 config-tool-source:
@@ -26,6 +28,7 @@ config-tool-source:
 		git checkout $(CONFIG_TOOL_SOURCE) && \
 		go mod vendor && \
 		rm -Rf .git .github .gitignore
+	echo github.com/quay/config-tool `git rev-parse HEAD` >> ../../source.sha
 
 JWTPROXY_SOURCE ?= v0.0.4
 jwtproxy-source:
@@ -36,6 +39,7 @@ jwtproxy-source:
 		go mod init github.com/quay/jwtproxy/v2 && \
 		go mod vendor && \
 		rm -Rf .git .github .gitignore
+	echo github.com/quay/jwtproxy `git rev-parse HEAD` >> ../../source.sha
 
 PUSHGATEWAY_SOURCE ?= v1.3.0
 pushgateway-source:
@@ -45,10 +49,11 @@ pushgateway-source:
 		git checkout $(PUSHGATEWAY_SOURCE) && \
 		go mod vendor && \
 		rm -Rf .git .github .gitignore
+	echo github.com/prometheus/pushgateay `git rev-parse HEAD` >> ../../source.sha
 
 commit:
 	-git commit -a -m "updated"
-	git push thomasmckay quay-3.4-rhel-8
+	git push origin quay-3.4-rhel-8
 
 all: setup quay-source config-tool-source jwtproxy-source pushgateway-source
 	git status
