@@ -140,7 +140,8 @@ func ValidateRedisConnection(options *redis.Options, field, fgName string) (bool
 	rdb := redis.NewClient(options)
 
 	// Ping client
-	var ctx = context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	_, err := rdb.Ping(ctx).Result()
 	if err != nil {
 		newError := ValidationError{
@@ -174,7 +175,7 @@ func ValidateIsOneOfString(input string, options []string, field string, fgName 
 		newError := ValidationError{
 			Tags:       []string{field},
 			FieldGroup: fgName,
-			Message:    field + " must be one of " + strings.Join(options, ",") + ".",
+			Message:    field + " must be one of " + strings.Join(options, ", ") + ".",
 		}
 		return false, newError
 	}
