@@ -1,3 +1,4 @@
+# TODO: obsolete all this! https://projects.engineering.redhat.com/browse/CLOUDBLD-2838
 RELEASE ?= v3.5.0
 
 setup:
