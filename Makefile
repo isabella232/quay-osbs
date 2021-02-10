@@ -1,15 +1,16 @@
-RELEASE ?= v3.4.1
+RELEASE ?= v3.5.0
 
 setup:
 	-mkdir source
 	-rm -f source.sha
 
-QUAY_SOURCE ?= redhat-3.4
+QUAY_SOURCE ?= master
 quay-source:
 	-rm -Rf source/quay
 	git clone https://github.com/quay/quay.git source/quay && \
 		cd source/quay && \
 		git checkout $(QUAY_SOURCE) && \
+		echo github.com/quay/quay `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
 	curl -fsSL https://ip-ranges.amazonaws.com/ip-ranges.json -o source/quay/util/ipresolver/aws-ip-ranges.json
 	-mkdir -p source/quay/static/webfonts
@@ -18,17 +19,16 @@ quay-source:
 	cd source/quay && \
 		PYTHONPATH=. python -m external_libraries
 	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
-	echo github.com/quay/quay `git rev-parse HEAD` >> ../../source.sha
 
-CONFIG_TOOL_SOURCE ?= redhat-3.4
+CONFIG_TOOL_SOURCE ?= master
 config-tool-source:
 	-rm -Rf source/config-tool
 	git clone https://github.com/quay/config-tool.git source/config-tool && \
 		cd source/config-tool && \
 		git checkout $(CONFIG_TOOL_SOURCE) && \
 		go mod vendor && \
+		echo github.com/quay/config-tool `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
-	echo github.com/quay/config-tool `git rev-parse HEAD` >> ../../source.sha
 
 JWTPROXY_SOURCE ?= v0.0.4
 jwtproxy-source:
@@ -38,8 +38,8 @@ jwtproxy-source:
 		git checkout $(JWTPROXY_SOURCE) && \
 		go mod init github.com/quay/jwtproxy/v2 && \
 		go mod vendor && \
+		echo github.com/quay/jwtproxy `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
-	echo github.com/quay/jwtproxy `git rev-parse HEAD` >> ../../source.sha
 
 PUSHGATEWAY_SOURCE ?= v1.3.0
 pushgateway-source:
@@ -48,13 +48,14 @@ pushgateway-source:
 		cd source/pushgateway && \
 		git checkout $(PUSHGATEWAY_SOURCE) && \
 		go mod vendor && \
+		echo github.com/prometheus/pushgateay `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
-	echo github.com/prometheus/pushgateay `git rev-parse HEAD` >> ../../source.sha
 
 commit:
 	-git commit -a -m "updated"
-	git push origin quay-3.4-rhel-8
+	git push origin quay-3.5-rhel-8
 
 all: setup quay-source config-tool-source jwtproxy-source pushgateway-source
+	sed -i "s/### master/### v3.5.0-preview-`git rev-parse --short HEAD`/" source/quay/CHANGELOG.md
 	git status
 	echo "Don't forget to git commit & push"
