@@ -1,4 +1,4 @@
-RELEASE ?= v3.4.1
+RELEASE ?= v3.4.2
 
 setup:
 	-mkdir source
@@ -52,7 +52,7 @@ pushgateway-source:
 		rm -Rf .git .github .gitignore
 
 commit:
-	-git commit -a -m "updated"
+	-git commit -a -m "updated $(RELEASE)"
 	git push origin quay-3.4-rhel-8
 
 all: setup quay-source config-tool-source jwtproxy-source pushgateway-source
