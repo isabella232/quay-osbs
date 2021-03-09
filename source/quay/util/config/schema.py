@@ -856,6 +856,12 @@ CONFIG_SCHEMA = {
             "description": "Whether super users are supported. Defaults to True",
             "x-example": True,
         },
+        # Feature Flag: Use FIPS compliant cryptography.
+        "FEATURE_FIPS": {
+            "type": "boolean",
+            "description": "If set to true, Quay will run using FIPS compliant hash functions. Defaults to False",
+            "x-example": True,
+        },
         # Feature Flag: Anonymous Users.
         "FEATURE_ANONYMOUS_ACCESS": {
             "type": "boolean",
@@ -988,7 +994,7 @@ CONFIG_SCHEMA = {
             "x-example": True,
         },
         "REPO_MIRROR_SERVER_HOSTNAME": {
-            "type": "string",
+            "type": ["string", "null"],
             "description": "Replaces the SERVER_HOSTNAME as the destination for mirroring. Defaults to unset",
             "x-example": "openshift-quay-service",
         },

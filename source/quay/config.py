@@ -379,6 +379,9 @@ class DefaultConfig(ImmutableConfig):
     # logging in via OIDC or a non-database internal auth provider.
     FEATURE_USERNAME_CONFIRMATION = True
 
+    # Feature Flag: If set to true, Quay will run using FIPS compliant hash functions.
+    FEATURE_FIPS = False
+
     # If a namespace is defined in the public namespace list, then it will appear on *all*
     # user's repository list pages, regardless of whether that user is a member of the namespace.
     # Typically, this is used by an enterprise customer in configuring a set of "well-known"
@@ -503,7 +506,7 @@ class DefaultConfig(ImmutableConfig):
     REPO_MIRROR_TLS_VERIFY = True
 
     # Replaces the SERVER_HOSTNAME as the destination for mirroring.
-    REPO_MIRROR_SERVER_HOSTNAME = "localhost:5000"
+    REPO_MIRROR_SERVER_HOSTNAME = None
 
     # JWTProxy Settings
     # The address (sans schema) to proxy outgoing requests through the jwtproxy
