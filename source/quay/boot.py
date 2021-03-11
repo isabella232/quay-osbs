@@ -17,6 +17,7 @@ from data.model.service_keys import get_service_key
 from util.config.database import sync_database_with_config
 from util.generatepresharedkey import generate_key
 from _init import CONF_DIR
+from cryptography.hazmat.primitives import serialization
 
 
 logger = logging.getLogger(__name__)
