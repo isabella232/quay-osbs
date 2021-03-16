@@ -46,9 +46,7 @@ def add_enterprise_config_defaults(config_obj, current_secret_key):
 
     # Default repo mirror config.
     config_obj["REPO_MIRROR_TLS_VERIFY"] = config_obj.get("REPO_MIRROR_TLS_VERIFY", True)
-    config_obj["REPO_MIRROR_SERVER_HOSTNAME"] = config_obj.get(
-        "REPO_MIRROR_SERVER_HOSTNAME", config_obj["SERVER_HOSTNAME"]
-    )
+    config_obj["REPO_MIRROR_SERVER_HOSTNAME"] = config_obj.get("REPO_MIRROR_SERVER_HOSTNAME", None)
 
     # Default security scanner config.
     config_obj["FEATURE_SECURITY_NOTIFICATIONS"] = config_obj.get(
@@ -70,7 +68,7 @@ def add_enterprise_config_defaults(config_obj, current_secret_key):
     # Default mail setings.
     config_obj["MAIL_USE_TLS"] = config_obj.get("MAIL_USE_TLS", True)
     config_obj["MAIL_PORT"] = config_obj.get("MAIL_PORT", 587)
-    config_obj["MAIL_DEFAULT_SENDER"] = config_obj.get("MAIL_DEFAULT_SENDER", "support@quay.io")
+    config_obj["MAIL_DEFAULT_SENDER"] = config_obj.get("MAIL_DEFAULT_SENDER", "admin@example.com")
 
     # Default auth type.
     if not "AUTHENTICATION_TYPE" in config_obj:

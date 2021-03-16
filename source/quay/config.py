@@ -189,7 +189,7 @@ class DefaultConfig(ImmutableConfig):
     MAIL_PORT = 587
     MAIL_USERNAME = None
     MAIL_PASSWORD = None
-    MAIL_DEFAULT_SENDER = "example@projectquay.io"
+    MAIL_DEFAULT_SENDER = "admin@example.com"
     MAIL_FAIL_SILENTLY = False
     TESTING = True
 
@@ -503,7 +503,7 @@ class DefaultConfig(ImmutableConfig):
     REPO_MIRROR_TLS_VERIFY = True
 
     # Replaces the SERVER_HOSTNAME as the destination for mirroring.
-    REPO_MIRROR_SERVER_HOSTNAME = "localhost:5000"
+    REPO_MIRROR_SERVER_HOSTNAME = None
 
     # JWTProxy Settings
     # The address (sans schema) to proxy outgoing requests through the jwtproxy

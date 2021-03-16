@@ -264,6 +264,7 @@ angular.module("quay-config")
 
         const addSetupConfig = function (config) {
           config["SETUP_COMPLETE"] = true;
+          config["SECRET_KEY"] = generateDatabaseSecretKey();
           config["DATABASE_SECRET_KEY"] = generateDatabaseSecretKey();
           config["BITTORRENT_FILENAME_PEPPER"] = generateDatabaseSecretKey();
           config["FEATURE_ACI_CONVERSION"] = false;
@@ -292,7 +293,7 @@ angular.module("quay-config")
 
           if($scope.certs["database.pem"]){
             $scope.config["DB_CONNECTION_ARGS"]["ssl"] = {}
-            $scope.config["DB_CONNECTION_ARGS"]["ssl"]["ca"] = "database.pem";
+            $scope.config["DB_CONNECTION_ARGS"]["ssl"]["ca"] = "conf/stack/database.pem";
           }
 
           var errorDisplay = ApiService.errorDisplay(
