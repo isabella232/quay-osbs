@@ -8,14 +8,15 @@ from data import model
 from workers.queueworker import QueueWorker, WorkerSleepException
 from util.log import logfile_path
 from util.locking import GlobalLock, LockNotAcquiredException
+from util.metrics.prometheus import gc_namespaces_purged
 from workers.gunicorn_worker import GunicornWorker
 
 logger = logging.getLogger(__name__)
 
 
 POLL_PERIOD_SECONDS = 60
-NAMESPACE_GC_TIMEOUT = 60 * 60  # 60 minutes
-LOCK_TIMEOUT_PADDING = 60  # seconds
+NAMESPACE_GC_TIMEOUT = 24 * 60 * 60  # 24h
+LOCK_TIMEOUT_PADDING = 60  # 60 seconds
 
 
 class NamespaceGCWorker(QueueWorker):
@@ -38,6 +39,8 @@ class NamespaceGCWorker(QueueWorker):
         marker_id = job_details["marker_id"]
         if not model.user.delete_namespace_via_marker(marker_id, all_queues):
             raise Exception("GC interrupted; will retry")
+
+        gc_namespaces_purged.inc()
 
 
 def create_gunicorn_worker():

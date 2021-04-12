@@ -1,11 +1,11 @@
 # TODO: obsolete all this! https://projects.engineering.redhat.com/browse/CLOUDBLD-2838
-RELEASE ?= v3.5.0
+RELEASE ?= v3.6.0
 
 setup:
 	-mkdir source
 	-rm -f source.sha
 
-QUAY_SOURCE ?= redhat-3.5
+QUAY_SOURCE ?= master
 quay-source:
 	-rm -Rf source/quay
 	git clone https://github.com/quay/quay.git source/quay && \
@@ -21,7 +21,7 @@ quay-source:
 		PYTHONPATH=. python -m external_libraries
 	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
 
-CONFIG_TOOL_SOURCE ?= redhat-3.5
+CONFIG_TOOL_SOURCE ?= master
 config-tool-source:
 	-rm -Rf source/config-tool
 	git clone https://github.com/quay/config-tool.git source/config-tool && \
@@ -54,9 +54,8 @@ pushgateway-source:
 
 commit:
 	-git commit -a -m "updated"
-	git push origin quay-3.5-rhel-8
+	git push origin quay-3.6-rhel-8
 
 all: setup quay-source config-tool-source jwtproxy-source pushgateway-source
-	#sed -i "s/### master/### v3.5.0-preview-`git rev-parse --short HEAD`/" source/quay/CHANGELOG.md
 	git status
 	echo "Don't forget to git commit & push"
