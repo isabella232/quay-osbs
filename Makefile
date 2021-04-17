@@ -1,5 +1,5 @@
 # TODO: obsolete all this! https://projects.engineering.redhat.com/browse/CLOUDBLD-2838
-RELEASE ?= v3.5.0
+RELEASE ?= v3.5.1
 
 setup:
 	-mkdir source
@@ -57,6 +57,5 @@ commit:
 	git push origin quay-3.5-rhel-8
 
 all: setup quay-source config-tool-source jwtproxy-source pushgateway-source
-	#sed -i "s/### master/### v3.5.0-preview-`git rev-parse --short HEAD`/" source/quay/CHANGELOG.md
 	git status
 	echo "Don't forget to git commit & push"
