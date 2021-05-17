@@ -1,4 +1,4 @@
-github.com/quay/quay 9cb2b5f9b21b654bc5dde7bf7cb4e8c9edfcb3f5
-github.com/quay/config-tool 581ead421a9417e1adad5b9acba0528b25da68b2
+github.com/quay/quay 825d4e9a38f881c30c73fcd3fff8005a874be072
+github.com/quay/config-tool 04e7bb0f166b95a76d1b1406e91fd00c7a2d3642
 github.com/quay/jwtproxy c0ce9c9a5aa0af662ff9c4d5a3a2266ced344c1b
 github.com/prometheus/pushgateay 007ba874bead1b9ad2253d89e3adeb16a73fd012
