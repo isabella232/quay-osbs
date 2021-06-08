@@ -1,6 +1,6 @@
 module github.com/quay/jwtproxy/v2
 
-go 1.14
+go 1.16
 
 require (
 	github.com/coreos/go-oidc v0.0.0-20160330172125-f427f54ef96b
