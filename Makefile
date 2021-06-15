@@ -27,7 +27,6 @@ config-tool-source:
 	git clone https://github.com/quay/config-tool.git source/config-tool && \
 		cd source/config-tool && \
 		git checkout $(CONFIG_TOOL_SOURCE) && \
-		go mod vendor && \
 		echo github.com/quay/config-tool `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
 
@@ -37,8 +36,6 @@ jwtproxy-source:
 	git clone https://github.com/quay/jwtproxy.git source/jwtproxy && \
 		cd source/jwtproxy && \
 		git checkout $(JWTPROXY_SOURCE) && \
-		go mod init github.com/quay/jwtproxy/v2 && \
-		go mod vendor && \
 		echo github.com/quay/jwtproxy `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
 
@@ -48,7 +45,6 @@ pushgateway-source:
 	git clone https://github.com/prometheus/pushgateway.git source/pushgateway && \
 		cd source/pushgateway && \
 		git checkout $(PUSHGATEWAY_SOURCE) && \
-		go mod vendor && \
 		echo github.com/prometheus/pushgateay `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
 
