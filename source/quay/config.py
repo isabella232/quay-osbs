@@ -653,6 +653,12 @@ class DefaultConfig(ImmutableConfig):
     DATA_MODEL_CACHE_CONFIG = {
         "engine": "memcached",
         "endpoint": ("127.0.0.1", 18080),
+        "repository_blob_cache_ttl": "60s",
+        "catalog_page_cache_ttl": "60s",
+        "namespace_geo_restrictions_cache_ttl": "240s",
+        "active_repo_tags_cache_ttl": "120s",
+        "appr_applications_list_cache_ttl": "3600s",
+        "appr_show_package_cache_ttl": "3600s",
     }
 
     # Defines the number of successive failures of a build trigger's build before the trigger is
@@ -761,3 +767,9 @@ class DefaultConfig(ImmutableConfig):
 
     # TEMP FEATURE: Backfill the sizes of manifests.
     FEATURE_MANIFEST_SIZE_BACKFILL = True
+
+    # Repos created by push default to private visibility
+    CREATE_PRIVATE_REPO_ON_PUSH = True
+
+    # Create organization on push if it does not exist
+    CREATE_NAMESPACE_ON_PUSH = False

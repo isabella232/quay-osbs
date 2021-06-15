@@ -8,14 +8,13 @@ from data import model, database
 from workers.queueworker import QueueWorker, WorkerSleepException
 from util.log import logfile_path
 from util.locking import GlobalLock, LockNotAcquiredException
-from util.metrics.prometheus import gc_repos_purged
 from workers.gunicorn_worker import GunicornWorker
 
 logger = logging.getLogger(__name__)
 
 
 POLL_PERIOD_SECONDS = 60
-REPOSITORY_GC_TIMEOUT = 24 * 60 * 60  # 24h
+REPOSITORY_GC_TIMEOUT = 3 * 60 * 60  # 3h
 LOCK_TIMEOUT_PADDING = 60  # 60 seconds
 
 
@@ -48,8 +47,6 @@ class RepositoryGCWorker(QueueWorker):
         if not model.gc.purge_repository(marker.repository):
             raise Exception("GC interrupted; will retry")
 
-        gc_repos_purged.inc()
-
 
 def create_gunicorn_worker():
     """
@@ -78,6 +75,7 @@ if __name__ == "__main__":
         while True:
             time.sleep(100000)
 
+    GlobalLock.configure(app.config)
     logger.debug("Starting repository GC worker")
     worker = RepositoryGCWorker(
         repository_gc_queue,

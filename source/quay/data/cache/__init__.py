@@ -2,6 +2,7 @@ from data.cache.impl import (
     NoopDataModelCache,
     InMemoryDataModelCache,
     MemcachedModelCache,
+    RedisDataModelCache,
     DisconnectWrapper,
 )
 
@@ -14,10 +15,10 @@ def get_model_cache(config):
     engine = cache_config.get("engine", "noop")
 
     if engine == "noop":
-        return NoopDataModelCache()
+        return NoopDataModelCache(cache_config)
 
     if engine == "inmemory":
-        return InMemoryDataModelCache()
+        return InMemoryDataModelCache(cache_config)
 
     if engine == "memcached":
         endpoint = cache_config.get("endpoint", None)
@@ -28,10 +29,25 @@ def get_model_cache(config):
         connect_timeout = cache_config.get("connect_timeout")
         predisconnect = cache_config.get("predisconnect_from_db")
 
-        cache = MemcachedModelCache(endpoint, timeout=timeout, connect_timeout=connect_timeout)
+        cache = MemcachedModelCache(
+            cache_config, endpoint, timeout=timeout, connect_timeout=connect_timeout
+        )
         if predisconnect:
             cache = DisconnectWrapper(cache, config)
 
         return cache
+
+    if engine == "redis":
+        primary_config = cache_config.get("primary", None)
+        replica_config = cache_config.get("replica", None)
+
+        if not primary_config or primary_config.get("host") is None:
+            raise Exception("Missing `primary_host` for Redis model cache configuration")
+
+        return RedisDataModelCache(
+            cache_config,
+            primary_config=primary_config,
+            replica_config=replica_config,
+        )
 
     raise Exception("Unknown model cache engine `%s`" % engine)
