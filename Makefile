@@ -36,6 +36,8 @@ jwtproxy-source:
 	git clone https://github.com/quay/jwtproxy.git source/jwtproxy && \
 		cd source/jwtproxy && \
 		git checkout $(JWTPROXY_SOURCE) && \
+		go mod init github.com/quay/jwtproxy/v2 && \
+		go mod vendor && \
 		echo github.com/quay/jwtproxy `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
 
