@@ -13,12 +13,12 @@ quay-source:
 		git checkout $(QUAY_SOURCE) && \
 		echo github.com/quay/quay `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
-	curl -fsSL https://ip-ranges.amazonaws.com/ip-ranges.json -o source/quay/util/ipresolver/aws-ip-ranges.json
-	-mkdir -p source/quay/static/webfonts
-	-mkdir -p source/quay/static/fonts
-	-mkdir -p source/quay/static/ldn
-	cd source/quay && \
-		PYTHONPATH=. python -m external_libraries
+	# curl -fsSL https://ip-ranges.amazonaws.com/ip-ranges.json -o source/quay/util/ipresolver/aws-ip-ranges.json
+	# -mkdir -p source/quay/static/webfonts
+	# -mkdir -p source/quay/static/fonts
+	# -mkdir -p source/quay/static/ldn
+	# cd source/quay && \
+	# 	PYTHONPATH=. python -m external_libraries
 	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
 
 CONFIG_TOOL_SOURCE ?= redhat-3.5
