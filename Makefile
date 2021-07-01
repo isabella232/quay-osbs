@@ -1,5 +1,5 @@
 # TODO: obsolete all this! https://projects.engineering.redhat.com/browse/CLOUDBLD-2838
-RELEASE ?= v3.5.1
+RELEASE ?= v3.5.3
 
 setup:
 	-mkdir source
@@ -14,12 +14,17 @@ quay-source:
 		echo github.com/quay/quay `git rev-parse HEAD` >> ../../source.sha && \
 		rm -Rf .git .github .gitignore
 	curl -fsSL https://ip-ranges.amazonaws.com/ip-ranges.json -o source/quay/util/ipresolver/aws-ip-ranges.json
+	cp -R source/quay-static/webfonts source/quay/static/webfonts
+	cp -R source/quay-static/fonts source/quay/static/fonts
+	cp -R source/quay-static/ldn source/quay/static/ldn
+	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
+
+quay-static:
 	-mkdir -p source/quay/static/webfonts
 	-mkdir -p source/quay/static/fonts
 	-mkdir -p source/quay/static/ldn
 	cd source/quay && \
-	PYTHONPATH=. python -m external_libraries
-	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
+		PYTHONPATH=. python -m external_libraries
 
 CONFIG_TOOL_SOURCE ?= redhat-3.5
 config-tool-source:
