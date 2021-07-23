@@ -41,6 +41,7 @@ CLIENT_WHITELIST = [
     "SEARCH_MAX_RESULT_PAGE_COUNT",
     "BRANDING",
     "DOCUMENTATION_ROOT",
+    "FEATURE_REPO_MIRROR",
 ]
 
 
@@ -468,7 +469,7 @@ class DefaultConfig(ImmutableConfig):
     FEATURE_SECURITY_NOTIFICATIONS = False
 
     # The endpoint for the (deprecated) V2 security scanner.
-    SECURITY_SCANNER_ENDPOINT = "http://192.168.99.101:6060"
+    SECURITY_SCANNER_ENDPOINT = None
 
     # The endpoint for the V4 security scanner.
     SECURITY_SCANNER_V4_ENDPOINT = None
@@ -776,3 +777,6 @@ class DefaultConfig(ImmutableConfig):
 
     # Account recovery mode
     ACCOUNT_RECOVERY_MODE = False
+
+    # Feature Flag: If set to true, the first User account may be created via API /api/v1/user/initialize
+    FEATURE_USER_INITIALIZE = False

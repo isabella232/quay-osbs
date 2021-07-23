@@ -15,6 +15,8 @@ from data.secscan_model.datatypes import (
     Feature,
     Layer,
     Metadata,
+    NVD,
+    CVSSv3,
     Vulnerability,
     PaginatedNotificationResult,
     PaginatedNotificationStatus,
@@ -267,7 +269,7 @@ class V4SecurityScanner(SecurityScannerInterface):
             layers = registry_model.list_manifest_layers(manifest, self.storage, True)
             if layers is None or len(layers) == 0:
                 logger.warning(
-                    "Cannot index %s/%s@%s due to manifest being invalid"
+                    "Cannot index %s/%s@%s due to manifest being invalid (manifest has no layers)"
                     % (
                         candidate.repository.namespace_user,
                         candidate.repository.name,
@@ -374,7 +376,6 @@ def features_for(report):
     Transforms a Clair v4 `VulnerabilityReport` dict into the standard shape of a
     Quay Security scanner response.
     """
-
     features = []
     for pkg_id, pkg in report["packages"].items():
         pkg_env = report["environments"][pkg_id][0]
@@ -382,6 +383,14 @@ def features_for(report):
             report["vulnerabilities"][vuln_id]
             for vuln_id in report["package_vulnerabilities"].get(pkg_id, [])
         ]
+        enrichments = (
+            {
+                key: sorted(val, key=lambda x: x["baseScore"], reverse=True)[0]
+                for key, val in list(report["enrichments"].values())[0][0].items()
+            }
+            if report.get("enrichments", {})
+            else {}
+        )
 
         features.append(
             Feature(
@@ -406,6 +415,12 @@ def features_for(report):
                             vuln.get("repository", {}).get("uri"),
                             vuln.get("distribution", {}).get("name"),
                             vuln.get("distribution", {}).get("version"),
+                            NVD(
+                                CVSSv3(
+                                    enrichments.get(vuln["id"], {}).get("vectorString", ""),
+                                    enrichments.get(vuln["id"], {}).get("baseScore", ""),
+                                )
+                            ),
                         ),
                     )
                     for vuln in pkg_vulns

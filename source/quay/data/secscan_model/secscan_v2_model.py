@@ -49,7 +49,7 @@ class NoopV2SecurityScanner(SecurityScannerInterface):
     """
 
     def load_security_information(self, manifest_or_legacy_image, include_vulnerabilities=False):
-        return None
+        return SecurityInformationLookupResult.for_request_error("not implemented (noop) scanner")
 
     def perform_indexing(self, start_token=None):
         return None
@@ -86,7 +86,7 @@ class V2SecurityScanner(SecurityScannerInterface):
 
         validator = V2SecurityConfigValidator(
             app.config.get("FEATURE_SECURITY_SCANNER", False),
-            app.config.get("SECURITY_SCANNER_ENDPOINT"),
+            app.config.get("SECURITY_SCANNER_ENDPOINT", None),
         )
 
         if not validator.valid():
