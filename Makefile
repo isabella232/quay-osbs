@@ -17,7 +17,7 @@ quay-source:
 	cp -R source/quay-static/webfonts source/quay/static/webfonts
 	cp -R source/quay-static/fonts source/quay/static/fonts
 	cp -R source/quay-static/ldn source/quay/static/ldn
-	echo -e "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
+	echo "[metadata]\nname: quay\nversion: $(RELEASE)\n" > source/quay/setup.cfg
 
 quay-static:
 	-mkdir -p source/quay/static/webfonts
