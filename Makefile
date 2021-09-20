@@ -5,7 +5,7 @@ setup:
 	-mkdir source
 	-rm -f source.sha
 
-QUAY_SOURCE ?= redhat-3.5
+QUAY_SOURCE ?= redhat-3.5.8-alpha
 quay-source:
 	-rm -Rf source/quay
 	git clone https://github.com/quay/quay.git source/quay && \
