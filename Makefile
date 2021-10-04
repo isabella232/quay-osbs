@@ -1,4 +1,4 @@
-RELEASE ?= v3.4.6
+RELEASE ?= v3.4.7
 
 setup:
 	-mkdir source
