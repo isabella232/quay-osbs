@@ -1,11 +1,11 @@
 # TODO: obsolete all this! https://projects.engineering.redhat.com/browse/CLOUDBLD-2838
-RELEASE ?= v3.6.0
+RELEASE ?= v3.7.0
 
 setup:
 	-mkdir source
 	-rm -f source.sha
 
-QUAY_SOURCE ?= redhat-3.6
+QUAY_SOURCE ?= redhat-3.7
 quay-source:
 	-rm -Rf source/quay
 	git clone https://github.com/quay/quay.git source/quay && \
@@ -26,7 +26,7 @@ quay-static:
 	cd source/quay && \
 		PYTHONPATH=. python -m external_libraries
 
-CONFIG_TOOL_SOURCE ?= redhat-3.6
+CONFIG_TOOL_SOURCE ?= redhat-3.7
 config-tool-source:
 	-rm -Rf source/config-tool
 	git clone https://github.com/quay/config-tool.git source/config-tool && \
@@ -57,7 +57,7 @@ pushgateway-source:
 
 commit:
 	-git commit -a -m "updated"
-	git push origin quay-3.6-rhel-8
+	git push origin quay-3.7-rhel-8
 
 all: setup quay-source config-tool-source jwtproxy-source pushgateway-source
 	git status
