@@ -295,9 +295,11 @@ angular.module("quay-config")
           if($scope.certs["database.pem"] && $scope.config["DB_URI"].startsWith("postgres")){
             delete $scope.config["DB_CONNECTION_ARGS"]["ssl"];
             $scope.config["DB_CONNECTION_ARGS"]["sslrootcert"] = "conf/stack/database.pem";
+            $scope.config["DB_CONNECTION_ARGS"]["sslmode"] = "verify-full"
           } else if 
             ($scope.certs["database.pem"] && $scope.config["DB_URI"].startsWith("mysql")){
-            delete $scope.config["DB_CONNECTION_ARGS"]["sslrootcert"];  
+            delete $scope.config["DB_CONNECTION_ARGS"]["sslrootcert"];
+            delete $scope.config["DB_CONNECTION_ARGS"]["sslmode"];    
             $scope.config["DB_CONNECTION_ARGS"]["ssl"] = {}
             $scope.config["DB_CONNECTION_ARGS"]["ssl"]["ca"] = "conf/stack/database.pem";
           }
@@ -602,17 +604,21 @@ angular.module("quay-config")
           switch (value) {
             case 'none':
               $scope.config['PREFERRED_URL_SCHEME'] = 'http';
+              delete $scope.certs["ssl.key"]
+              delete $scope.certs["ssl.cert"]
               delete $scope.config['EXTERNAL_TLS_TERMINATION'];
               return;
 
             case 'external-tls':
               $scope.config['PREFERRED_URL_SCHEME'] = 'https';
               $scope.config['EXTERNAL_TLS_TERMINATION'] = true;
+              delete $scope.certs["ssl.key"];
+              delete $scope.certs["ssl.cert"];
               return;
 
             case 'internal-tls':
               $scope.config['PREFERRED_URL_SCHEME'] = 'https';
-              delete $scope.config['EXTERNAL_TLS_TERMINATION'];
+              $scope.config['EXTERNAL_TLS_TERMINATION'] = false;
               return;
           }
         };

@@ -60,6 +60,8 @@ github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil
 github.com/aws/aws-sdk-go/service/cloudfront
 github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
+# github.com/aws/aws-sdk-go-v2/config v1.4.1
+## explicit
 # github.com/cespare/xxhash v1.1.0
 github.com/cespare/xxhash
 # github.com/coreos/go-oidc v2.2.1+incompatible
