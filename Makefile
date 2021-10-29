@@ -1,5 +1,5 @@
 # TODO: obsolete all this! https://projects.engineering.redhat.com/browse/CLOUDBLD-2838
-RELEASE ?= v3.6.0
+RELEASE ?= v3.6.1
 
 setup:
 	-mkdir source
